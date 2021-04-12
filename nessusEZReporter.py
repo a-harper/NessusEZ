@@ -6,6 +6,7 @@ import string
 import random
 import shutil
 import fileinput
+import html as h
 
 reportname = ""
 
@@ -135,9 +136,9 @@ def main():
         html += '<div><b>Affected hosts:</b> {0}</div>'.format(', '.join([n[0] for n in issue.hosts]))
         html += '<div><b>Nessus Risk:</b> {0}</div>'.format(issue.risk)
         html += '<div><b>CVSS:</b> {0}</div>'.format(issue.cvss3)
-        html += '<div><b>Description:</b> {0}</div>'.format(issue.description)
-        html += '<div><b>Synopsis:</b> {0}</div>'.format(issue.synopsis)
-        html += '<div><b>Recommendation:</b> {0}</div>'.format(issue.recommendation)
+        html += '<div><b>Description:</b> {0}</div>'.format(h.escape(issue.description))
+        html += '<div><b>Synopsis:</b> {0}</div>'.format(h.escape(issue.synopsis))
+        html += '<div><b>Recommendation:</b> {0}</div>'.format(h.escape(issue.recommendation))
         html += '<br /><br />'
         html += '<div><h5>Specific port details:</h5></div>'
         for host in issue.hosts:
@@ -148,7 +149,8 @@ def main():
             html += '<div><h6>{0}</h6></div>'.format(host[0])
             for port in host[2]:
                 html += '<div><h7><b>Port: {0}</b></h7></div>'.format(port[0])
-                html += '<div><b>Tool output:</b> <pre>{0}</pre></div>'.format(port[1])
+                if port[1] and len(port[1]) > 0:
+                    html += '<div><b>Tool output:</b> <pre>{0}</pre></div>'.format(h.escape(port[1]))
                 html += '<br />'
         html += '<br /></div></div>'
         html += '<br />'
